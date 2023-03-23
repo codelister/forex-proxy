@@ -18,3 +18,10 @@ brew install docker
 brew install gradle
 docker pull paidyinc/one-frame:latest
 ```
+
+### Run the environment
+```bash
+colima start
+docker run -p 8081:8080 paidyinc/one-frame
+./gradlew bootRun
+```
