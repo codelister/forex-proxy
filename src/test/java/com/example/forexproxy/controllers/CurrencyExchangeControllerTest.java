@@ -53,6 +53,34 @@ class CurrencyExchangeControllerTest {
                 });
     }
 
+    @Test
+    void whenInvalidInput_thenReturns400WithJson() throws Exception {
+        String input1 = "USD";
+        String input2 = "BADBADNOTGOOD";
+        when(currencyExchangeService.getExchangeRate(input1, input2)).thenReturn(List.of(new ExchangeRate(input1, input2, 1.0, 1.0, 1.0,"")));
+        mockMvc.perform(get("/api/exchange-rates?fromCurrency={input1}&toCurrency={input2}", input1, input2))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> {
+                    String expected = objectMapper.writeValueAsString(new ErrorResponse(HttpStatusCode.valueOf(400), "getExchangeRate.toCurrency: Invalid currency"));
+                    String actual = result.getResponse().getContentAsString();
+                    assert actual.equals(expected);
+                });
+    }
+
+    @Test
+    void whenException_thenReturns500WithJson() throws Exception {
+        String input1 = "USD";
+        String input2 = "CAD";
+        when(currencyExchangeService.getExchangeRate(input1, input2)).thenThrow(new RuntimeException());
+        mockMvc.perform(get("/api/exchange-rates?fromCurrency={input1}&toCurrency={input2}", input1, input2))
+                .andExpect(status().isInternalServerError())
+                .andExpect(result -> {
+                    String expected = objectMapper.writeValueAsString(new ErrorResponse(HttpStatusCode.valueOf(500), "An unexpected error has occurred"));
+                    String actual = result.getResponse().getContentAsString();
+                    assert actual.equals(expected);
+                });
+    }
+
     private static Stream<Arguments> generateCurrencyPairs() {
         return ALLOWED_CURRENCIES.stream()
                 .flatMap(currency1 -> ALLOWED_CURRENCIES.stream()
