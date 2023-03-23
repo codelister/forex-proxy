@@ -13,8 +13,17 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter")
+	implementation("org.springframework.boot:spring-boot-starter-web")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
+
+	//web client
+	implementation("org.springframework.boot:spring-boot-starter-webflux")
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	//square okhttp3
+	testImplementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
+	testImplementation("com.squareup.okhttp3:okhttp")
+	testImplementation("com.squareup.okhttp3:mockwebserver")
 }
 
 tasks.withType<Test> {
