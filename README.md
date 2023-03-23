@@ -1,4 +1,4 @@
-Forex-Proxy is a service that provides a simple api to get the latest exchange rates.
+Forex-Proxy is a Spring Boot application that exposes a simple api to get the latest exchange rates from a provider.
 
 ## Requirements
 - colima
