@@ -29,6 +29,11 @@ docker run -p 8081:8080 paidyinc/one-frame
 ## Design Considerations
 I kept this pretty minimal and focused on the main requirements. There's simple validation, error handling, and unit tests.
 I am also new to Spring Boot, so there are probably better ways to do things. Nevertheless, it was a fun project to work on.
+The paidy container has a 1000 request limit, so we need to cache the exchange rates. I added a basic cache evicting after 4 minutes.
+This enables fresh enough exchange rates and enabling over 10000 requests per day.
+There's a bash script that can be used to make 10000 requests to the api. It's not perfect, but works for now. With more time,
+I'd investigate how to utilize Spring Boot and write a test that meets this requirement. 
+
 
 ## If this were a real project
 For an MVP, it needs to be useful enough for the client. We can continuously iterate on the MVP to make it more useful.
@@ -42,14 +47,12 @@ Production-ready means the service has sufficient reliability, performance, and 
 - Runbook exists to ensure smooth on-call experience
 
 ### Regarding the api
-- The api can handle more than 2 currencies. For simplicity, the service making the api call will only support 2 currencies.
 - If the api is not working, should the user get an old value or an error?
     - If old value, should we let them know it's old?
 - If the api is too flaky, maybe a separate job can deal with collecting fresh exchange rates and persist it in our cache or db.
     - The cheapest solution is probably just an in-memory cache.
         - 5 instances with their own in-memory cache could lead to inconsistency
             - If that's important, we should probably have a centralized database storing the exchange rates.
-- If the api is prone to hitting rate limits, caching is a good solution.
 
 ### Response models
 - JSON responses with minimal customization

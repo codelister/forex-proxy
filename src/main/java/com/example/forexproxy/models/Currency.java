@@ -9,7 +9,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.Set;
+
+import static com.example.forexproxy.config.Configuration.ALLOWED_CURRENCIES;
 
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
@@ -21,7 +22,6 @@ public @interface Currency {
 }
 
 class CurrencyValidator implements ConstraintValidator<Currency, String> {
-    private static final Set<String> ALLOWED_CURRENCIES = Set.of("AUD", "CAD", "CHF", "EUR", "GBP", "NZD", "JPY", "SGD", "USD");
 
     @Override
     public boolean isValid(String currency, ConstraintValidatorContext context) {
