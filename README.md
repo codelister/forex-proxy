@@ -26,13 +26,32 @@ docker run -p 8081:8080 paidyinc/one-frame
 ./gradlew bootRun
 ```
 
+### Run the tests
+```bash
+./gradlew test --tests "com.example.*Unit*"
+```
+
+### Run integration tests
+Ensure the environment is up and running. Then, run the following command.
+```bash
+./gradlew test --tests "com.example.*Integration*"
+```
+
+### Run the bash script which makes 10000 requests to the api
+```bash
+./test.sh
+```
+
 ## Design Considerations
 I kept this pretty minimal and focused on the main requirements. There's simple validation, error handling, and unit tests.
 I am also new to Spring Boot, so there are probably better ways to do things. Nevertheless, it was a fun project to work on.
 The paidy container has a 1000 request limit, so we need to cache the exchange rates. I added a basic cache evicting after 4 minutes.
 This enables fresh enough exchange rates and enabling over 10000 requests per day.
-There's a bash script that can be used to make 10000 requests to the api. It's not perfect, but works for now. With more time,
-I'd investigate how to utilize Spring Boot and write a test that meets this requirement. 
+There's a bash script that can be used to make 10000 requests to the api. It's not perfect, but works for now.
+I added a simple integration test for the service to ensure the cache is used as expected. The cache usage
+should guarantee fresh exchange rates are fetched. A heavy assumption here is that the paidy container always returns fresh values.
+
+With more time, I'd like to add more tests and improve existing ones.
 
 
 ## If this were a real project

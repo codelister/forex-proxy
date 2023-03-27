@@ -43,7 +43,7 @@ class CurrencyExchangeControllerTest {
     @ParameterizedTest(name = "Exchange rate between {0} and {1}")
     @MethodSource("generateCurrencyPairs")
     void whenValidInput_thenReturns200WithJson(String input1, String input2) throws Exception {
-        when(currencyExchangeService.getExchangeRate(input1, input2)).thenReturn(List.of(new ExchangeRate(input1, input2, 1.0, 1.0, 1.0,"")));
+        when(currencyExchangeService.getAllExchangeRates()).thenReturn(List.of(new ExchangeRate(input1, input2, 1.0, 1.0, 1.0,"")));
         mockMvc.perform(get("/api/exchange-rates?fromCurrency={input1}&toCurrency={input2}", input1, input2))
                 .andExpect(status().isOk())
                 .andExpect(result -> {
@@ -57,7 +57,7 @@ class CurrencyExchangeControllerTest {
     void whenInvalidInput_thenReturns400WithJson() throws Exception {
         String input1 = "USD";
         String input2 = "BADBADNOTGOOD";
-        when(currencyExchangeService.getExchangeRate(input1, input2)).thenReturn(List.of(new ExchangeRate(input1, input2, 1.0, 1.0, 1.0,"")));
+        when(currencyExchangeService.getAllExchangeRates()).thenReturn(List.of(new ExchangeRate(input1, input2, 1.0, 1.0, 1.0,"")));
         mockMvc.perform(get("/api/exchange-rates?fromCurrency={input1}&toCurrency={input2}", input1, input2))
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> {
@@ -71,7 +71,7 @@ class CurrencyExchangeControllerTest {
     void whenException_thenReturns500WithJson() throws Exception {
         String input1 = "USD";
         String input2 = "CAD";
-        when(currencyExchangeService.getExchangeRate(input1, input2)).thenThrow(new RuntimeException());
+        when(currencyExchangeService.getAllExchangeRates()).thenThrow(new RuntimeException());
         mockMvc.perform(get("/api/exchange-rates?fromCurrency={input1}&toCurrency={input2}", input1, input2))
                 .andExpect(status().isInternalServerError())
                 .andExpect(result -> {

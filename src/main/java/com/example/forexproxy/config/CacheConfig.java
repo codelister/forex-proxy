@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import static javax.management.timer.Timer.ONE_MINUTE;
 
 @EnableCaching
 @EnableScheduling
@@ -22,7 +21,7 @@ public class CacheConfig {
         return new ConcurrentMapCacheManager(CACHE_NAME);
     }
 
-    @Scheduled(fixedRate = ONE_MINUTE * 4)
+    @Scheduled(fixedRateString = "${currency.exchange.service.cache.evictionTime}")
     public void evictCache() {
         cacheManager().getCache(CACHE_NAME).clear();
     }
