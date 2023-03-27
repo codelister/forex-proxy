@@ -20,6 +20,10 @@ dependencies {
 	//web client
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+	//cache
+	implementation("org.springframework.boot:spring-boot-starter-cache")
+
 	//square okhttp3
 	testImplementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
 	testImplementation("com.squareup.okhttp3:okhttp")

@@ -24,8 +24,17 @@ public class CurrencyExchangeController {
             @RequestParam @Currency String fromCurrency,
             @RequestParam @Currency String toCurrency
     ) {
-        List<ExchangeRate> response = currencyExchangeService.getExchangeRate(fromCurrency, toCurrency);
-        ExchangeRate exchangeRate = response.get(0);
-        return new CurrencyConversionResult(exchangeRate.getFrom(), exchangeRate.getTo(), exchangeRate.getPrice());
+        if (fromCurrency.equals(toCurrency)) {
+            // Removing this will simplify the code, but potentially unnecessarily eat at our API limit
+            // 400 might be more appropriate since this is meaningless
+            return new CurrencyConversionResult(fromCurrency, toCurrency, 1.0);
+        }
+        List<ExchangeRate> response = currencyExchangeService.getAllExchangeRates();
+        return response.stream()
+                .filter(rate ->
+                        (rate.getFrom().equals(fromCurrency) && rate.getTo().equals(toCurrency)) || (rate.getFrom().equals(toCurrency) && rate.getTo().equals(fromCurrency)))
+                .findFirst()
+                .map(e -> new CurrencyConversionResult(e.getFrom(), e.getTo(), e.getPrice()))
+                .orElseThrow(() -> new RuntimeException("Exchange rate not found"));
     }
 }
